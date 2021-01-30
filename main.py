@@ -49,6 +49,7 @@ def download_iclr(client):
 LEFT_ARROW = 260
 RIGHT_ARROW = 261
 Q = 113
+P = 112
 READING_LIST_FNAME = "reading_list.csv"
 
 
@@ -75,11 +76,12 @@ def main(win):
         st_idx = 0
 
     done = False
-    for i in range(st_idx, len(data)):
+    i = st_idx
+    while i < len(data):
         if done:
             break
         paper = data[i]
-        win.addstr(f"-----> PROGRESS {i}/{n_papers} <-----\n")
+        win.addstr(f"-----> PROGRESS {i+1}/{n_papers} <-----\n")
         win.addstr(f"TITLE: {paper['submission_content']['title']}\n")
         win.refresh()
         win.addstr(f"AUTHORS: {paper['submission_content']['authors']}\n")
@@ -93,7 +95,7 @@ def main(win):
         win.addstr(f"ABSTRACT: {paper['submission_content']['abstract']}\n\n")
 
         win.addstr(
-            "[Right arrow key] to add. [Left arrow key] to skip. [q] to quit (your progress will be saved).\n"
+            "[Right arrow key] to add. [Left arrow key] to skip. [p] to the previous one. [q] to quit (your progress will be saved).\n"
         )
         win.refresh()
 
@@ -113,9 +115,13 @@ def main(win):
             elif key == Q:
                 done = True
                 break
+            elif key == P:
+                i-=2 # go to the previous one if skipped by mistake
+                break
             else:
                 time.sleep(0.01)
         win.clear()
+        i+=1
 
     with open(READING_LIST_FNAME, "w") as f:
         for idx in reading_list:
