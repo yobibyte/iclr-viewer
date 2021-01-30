@@ -1,6 +1,7 @@
 # iclr-viewer
 Go through the list of accepted papers for ICLR in terminal and add them to your reading list.
 
+![screenshot](screenshot.png?raw=true "Screenshot")
 
 ## Dependencies
 ```
