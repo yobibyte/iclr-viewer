@@ -5,8 +5,6 @@ import json
 import curses
 import time
 
-# TODO go back
-
 YEAR = 2021
 METADATA_FILE = f"iclr{YEAR}_metadata.json"
 
@@ -51,6 +49,7 @@ RIGHT_ARROW = 261
 Q = 113
 P = 112
 READING_LIST_FNAME = "reading_list.csv"
+LAST_ID_VIEWED_FNAME = ".lastid"
 
 
 def main(win):
@@ -76,7 +75,20 @@ def main(win):
         st_idx = 0
 
     done = False
-    i = st_idx
+
+    # load last id viewed, not last id of added paper
+    try:
+        with open(LAST_ID_VIEWED_FNAME, 'r') as f:
+            last_id = int(f.readline()) - 1 # since we do +1 in a while loop
+            # this will save us from failing when a person has gone through all of the papers
+    except:
+        # no .lastid
+        last_id = 0
+
+    # in case, a person went to the previous one multiple times, start from last added
+    i = max(last_id, st_idx)
+
+
     while i < len(data):
         if done:
             break
@@ -129,6 +141,8 @@ def main(win):
             f.write(
                 f"{idx}, {paper['submission_content']['title']}, https://openreview.net/forum?id={paper['forum']}\n"
             )
+    with open(LAST_ID_VIEWED_FNAME, 'w') as f:
+        f.write(f"{i}")
 
 
 if __name__ == "__main__":
