@@ -68,8 +68,7 @@ def main(win):
     try:
         with open(READING_LIST_FNAME, "r") as f:
             for line in f:
-                reading_list.append(int(line.split(",")[0]))
-        st_idx = reading_list[-1] + 1
+                st_idx = int(line.split(",")[0]) + 1
     except:
         win.addstr("No progress detected. Starting from the beginning\n")
         st_idx = 0
@@ -79,8 +78,7 @@ def main(win):
     # load last id viewed, not last id of added paper
     try:
         with open(LAST_ID_VIEWED_FNAME, 'r') as f:
-            last_id = int(f.readline()) - 1 # since we do +1 in a while loop
-            # this will save us from failing when a person has gone through all of the papers
+            last_id = int(f.readline())
     except:
         # no .lastid
         last_id = 0
@@ -135,15 +133,16 @@ def main(win):
         win.clear()
         i+=1
 
-    with open(READING_LIST_FNAME, "w") as f:
+    with open(READING_LIST_FNAME, "a") as f:
         for idx in reading_list:
             paper = data[idx]
             f.write(
                 f"{idx}, {paper['submission_content']['title']}, https://openreview.net/forum?id={paper['forum']}\n"
             )
     with open(LAST_ID_VIEWED_FNAME, 'w') as f:
-        f.write(f"{i}")
-
+        # since we do +1 in a while loop
+        # this will save us from failing when a person has gone through all of the papers
+        f.write(f"{i-1}")
 
 if __name__ == "__main__":
     if not os.path.exists(METADATA_FILE):
